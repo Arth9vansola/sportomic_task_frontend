@@ -1,10 +1,12 @@
+/* global process */
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import BookingForm from "./components/BookingForm";
 import SlotList from "./components/SlotList";
 import "./App.css";
 
-const BACKEND_URL = "https://sportomic-backend-task.onrender.com";
+// const BACKEND_URL = "";
 
 const sports = ["Football", "Basketball", "Tennis", "Badminton"];
 
@@ -19,32 +21,31 @@ function App() {
 
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/venues`).then((res) => setVenues(res.data));
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/venues`).then((res) => setVenues(res.data));
   }, []);
 
   useEffect(() => {
-    if (!date) return;
+  if (!date) return;
 
-   // Update this part of your fetchSlots function
-const fetchSlots = () => {
-  axios.get(`${BACKEND_URL}/slots?date=${date}`).then((res) => {
-    const grouped = res.data.reduce((acc, slot) => {
-      if (!acc[slot.venue]) acc[slot.venue] = [];
-      // Make sure each slot has a booked property
-      acc[slot.venue].push({
-        ...slot,
-        booked: slot.booked !== undefined ? slot.booked : Math.random() > 0.7 // Random booking status for demo
-      });
-      return acc;
-    }, {});
-    setSlotsByVenue(grouped);
-  });
-};
+  const fetchSlots = async () => {
+    await axios.get(`${process.env.REACT_APP_BACKEND_URL}/slots?date=${date}`).then((res) => {
+      const grouped = res.data.reduce((acc, slot) => {
+        if (!acc[slot.venue]) acc[slot.venue] = [];
+        acc[slot.venue].push({
+          ...slot,
+          booked: slot.booked !== undefined ? slot.booked : Math.random() > 0.7
+        });
+        return acc;
+      }, {});
+      setSlotsByVenue(grouped);
+    });
+  };
 
-    fetchSlots();
-    const interval = setInterval(fetchSlots, 5000);
-    return () => clearInterval(interval);
-  }, [date]);
+  fetchSlots();
+  const interval = setInterval(fetchSlots, 5000);
+  return () => clearInterval(interval);
+}, [date]);
+
 
   const handleBookNow = async () => {
   if (!selectedSlotId) {

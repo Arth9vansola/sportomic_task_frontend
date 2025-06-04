@@ -1,3 +1,4 @@
+/* global process */
 import React, { useEffect, useState } from "react";
 import SlotList from "./SlotList";
 
@@ -9,7 +10,7 @@ const SlotViewer = ({ selectedVenue, date, name, sport }) => {
     const fetchSlots = async () => {
       if (selectedVenue && date) {
         try {
-          const res = await fetch(`https://sportomic-backend-task.onrender.com/slots?venue=${selectedVenue}&date=${date}`);
+          const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/slots?venue=${selectedVenue}&date=${date}`);
           const data = await res.json();
           setSlots(data);
         } catch (err) {
