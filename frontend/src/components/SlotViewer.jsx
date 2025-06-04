@@ -9,7 +9,7 @@ const SlotViewer = ({ selectedVenue, date, name, sport }) => {
     const fetchSlots = async () => {
       if (selectedVenue && date) {
         try {
-          const res = await fetch(`http://localhost:5000/slots?venue=${selectedVenue}&date=${date}`);
+          const res = await fetch(`https://sportomic-backend-task.onrender.com/slots?venue=${selectedVenue}&date=${date}`);
           const data = await res.json();
           setSlots(data);
         } catch (err) {
@@ -26,7 +26,7 @@ const SlotViewer = ({ selectedVenue, date, name, sport }) => {
 
   const handleBooking = async (slotId, name, date, sport) => {
     try {
-      const res = await fetch(`http://localhost:5000/book`, {
+      const res = await fetch(`https://sportomic-backend-task.onrender.com/book`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: slotId, name, date, sport }),
